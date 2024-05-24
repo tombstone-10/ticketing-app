@@ -1,7 +1,9 @@
 import DeleteBlock from "./DeleteBlock";
+import EditBlock from "./EditBlock";
 import PriorityDisplay from "./PriorityDisplay";
 import ProgressDisplay from "./ProgressDisplay";
 import StatusDisplay from "./StatusDisplay";
+import Link from "next/link";
 
 const TicketCard = ({ ticket }) => {
 
@@ -25,10 +27,16 @@ const TicketCard = ({ ticket }) => {
     <div className="flex flex-col bg-card hover:bg-card-hover rounded-md shadow-lg p-3 m-2">
       <div className="flex mb-3">
         <PriorityDisplay priority={ ticket.priority } />
-        <div className="ml-auto">
-          <DeleteBlock />
+        <div className="flex justify-center align-center ml-auto disabled:">
+          <Link href={ `/TicketPage/${ticket._id}` } style={ { display: "content" } }>
+            <EditBlock />
+          </Link>
+          <div>
+            <DeleteBlock id={ ticket._id } />
+          </div>
         </div>
       </div>
+
       <h4>{ ticket.title }</h4>
       <hr className="h-px border-0 bg-page mb-2" />
       <p className="whitespace-pre-wrap">
