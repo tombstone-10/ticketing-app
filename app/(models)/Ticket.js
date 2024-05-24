@@ -1,7 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 
-mongoose.connect(process.env.MONGODB_URI);
-mongoose.Promise = global.Promise;
+try {
+    mongoose.connect(process.env.MONGODB_URI);
+    mongoose.Promise = global.Promise;
+    console.log('database connected');
+}
+catch (err) {
+    console.error(err.message)
+}
 
 const ticketSchema = new Schema({
     title: String,

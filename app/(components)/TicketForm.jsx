@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const TicketForm = () => {
+  const router = useRouter();
+
   const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -14,9 +16,20 @@ const TicketForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // const res = await fetch()
+    const res = await fetch("/api/Tickets", {
+      method: "POST",
+      body: JSON.stringify({ formData }),
+      "Content-type": "application/json",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to create ticket.");
+    }
+
+    router.refresh();
+    router.push("/");
   };
 
   const startingTicketData = {
@@ -25,7 +38,7 @@ const TicketForm = () => {
     priority: 1,
     progress: 0,
     status: "not started",
-    category: "Hardware Problem",
+    category: "Requirement Engineering",
   };
 
   const [formData, setFormData] = useState(startingTicketData);
@@ -62,9 +75,12 @@ const TicketForm = () => {
           value={formData.category}
           onChange={handleChange}
         >
-          <option value="Hardware Problem">Hardware Problem</option>
-          <option value="Software Problem">Software Problem</option>
-          <option value="Project">Project</option>
+          <option value="Requirement Engineering">
+            Requirement Engineering
+          </option>
+          <option value="UI/UX Design">UI/UX Design</option>
+          <option value="Development">Development</option>
+          <option value="Quality Assurance">Quality Assurance</option>
         </select>
         <label>Priority</label>
         <div>
