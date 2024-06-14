@@ -3,8 +3,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-const TicketForm = ({ticket}) => {
-
+const TicketForm = ({ ticket }) => {
   const EDITMODE = ticket._id === "new" ? false : true;
   const router = useRouter();
 
@@ -20,14 +19,28 @@ const TicketForm = ({ticket}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/Tickets", {
-      method: "POST",
-      body: JSON.stringify({ formData }),
-      "Content-type": "application/json",
-    });
 
-    if (!res.ok) {
-      throw new Error("Failed to create ticket.");
+    if (EDITMODE) {
+      const res = await fetch(`/api/Tickets/${ticket._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ formData }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to update ticket");
+      }
+    } else {
+      const res = await fetch("/api/Tickets", {
+        method: "POST",
+        body: JSON.stringify({ formData }),
+        //@ts-ignore
+        "Content-Type": "application/json",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to create ticket");
+      }
     }
 
     router.refresh();
@@ -43,7 +56,7 @@ const TicketForm = ({ticket}) => {
     category: "Requirement Engineering",
   };
 
-  if(EDITMODE){
+  if (EDITMODE) {
     startingTicketData["title"] = ticket.title;
     startingTicketData["description"] = ticket.description;
     startingTicketData["priority"] = ticket.priority;
@@ -157,7 +170,11 @@ const TicketForm = ({ticket}) => {
           <option value="started">Started</option>
           <option value="done">Done</option>
         </select>
-        <input type="submit" className="btn max-w-xs" value={EDITMODE ? "Update Ticket" : "Create Ticket"} />
+        <input
+          type="submit"
+          className="btn max-w-xs"
+          value={EDITMODE ? "Update Ticket" : "Create Ticket"}
+        />
       </form>
     </div>
   );
